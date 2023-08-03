@@ -1,0 +1,64 @@
+create database Assignment;
+use Assignment;
+CREATE TABLE SalesPeople (
+  Snum INT PRIMARY KEY,
+  Sname VARCHAR(50) UNIQUE,
+  City VARCHAR(50),
+  Comm DECIMAL(4, 2)
+);
+
+INSERT INTO SalesPeople (Snum, Sname, City, Comm)
+VALUES
+  (1001, 'Peel', 'London', 0.12),
+  (1002, 'Serres', 'Sanjose', 0.13),
+  (1004, 'Motika', 'London', 0.11),
+  (1007, 'Rifkin', 'Barcelona', 0.15),
+  (1003, 'Axelrod', 'Newyork', 0.10);
+CREATE TABLE Customers (
+  Cnum INT PRIMARY KEY,
+  Cname VARCHAR(50),
+  City VARCHAR(50) NOT NULL,
+  Snum INT,
+  FOREIGN KEY (Snum) REFERENCES SalesPeople(Snum)
+);
+
+INSERT INTO Customers (Cnum, Cname, City, Snum)
+VALUES
+  (2001, 'Hoffman', 'London', 1001),
+  (2002, 'Giovanni', 'Rome', 1003),
+  (2003, 'Liu', 'Sanjose', 1002),
+  (2004, 'Grass', 'Berlin', 1002),
+  (2006, 'Clemens', 'London', 1001),
+  (2008, 'Cisneros', 'Sanjose', 1007),
+  (2007, 'Pereira', 'Rome', 1004);
+
+#1.Count the number of Salesperson whose name begin with ‘a’/’A’.
+SELECT COUNT(*)
+FROM SalesPeople
+WHERE UPPER(Sname) LIKE 'A%';
+
+#2. Display all the Salesperson whose all orders worth is more than Rs. 2000.
+SELECT Snum, Sname
+FROM SalesPeople
+WHERE Snum IN (
+  SELECT Snum
+  FROM salespeople
+  GROUP BY Snum
+  HAVING MIN(comm) > 2000
+);
+#3.Count the number of Salesperson belonging to Newyork.
+SELECT COUNT(*)
+FROM SalesPeople
+WHERE City = 'Newyork';
+
+# 4.Display the number of Salespeople belonging to London and belonging to Paris.
+SELECT City, COUNT(*) AS Count
+FROM SalesPeople
+WHERE City IN ('London', 'Paris')
+GROUP BY City;
+
+#5 .Display the number of orders taken by each Salesperson and their date of orders.
+
+SELECT Snum, COUNT(*) AS NumOfOrders, comm
+FROM salespeople
+GROUP BY Snum, comm;
